@@ -4,7 +4,6 @@ const pongTable = document.querySelector("#pongTable");
 const ctx = pongTable.getContext("2d");
 const scoreBoard = document.querySelector("#score");
 
-
 // Getting the width and height of the table
 const tableWidth = pongTable.width;
 const tableHeight = pongTable.height;
@@ -12,8 +11,8 @@ const tableHeight = pongTable.height;
 // Create player 1 object
 let player1 = {
   Score: 0,
-  x: 0, // Up
-  y: tableWidth / 3, // Down
+  x: 0, // horizontal
+  y: tableWidth / 3, // vertical
   height: 100,
   width: 50,
   Color: "red",
@@ -34,11 +33,15 @@ const player2PaddleSpeed = 60;
 
 //Create ball object
 let ball = {
-  x: 200,
-  y: 200,
+  x: tableWidth / 2, // Balls x starting point will always be in center
+  y: tableHeight / 2, // Balls y starting point
+  directionX: 0.2,
+  directionY: 0.5,
   radius: 15,
-  Color: "yellow",
+  Color: "rgba(255, 255, 0, 0.9)",
 };
+console.log(ball.directionX);
+console.log(ball.directionY);
 
 // Call functions here
 gameLoop();
@@ -54,9 +57,11 @@ function gameLoop() {
   drawPaddle1();
   drawPaddle2();
   drawBall();
-  requestAnimationFrame(gameLoop); //calls the gameloop function to update the screen before the next repaint
+  moveBall();
+  hitDetection();
+  outOfBounds(player1.x, player1.y, player2.x, player2.y);
+  requestAnimationFrame(gameLoop); //calls the gameloop function to update the screen frame by frame
 }
-
 playerControls();
 
 // Draw Player 1
@@ -73,7 +78,25 @@ function drawPaddle2() {
 }
 
 // Create paddle boundaries
-function outOfBounds() {}
+function outOfBounds(x, y, x2, y2) {
+  // player 1 bounds
+
+  // This code works by checking if Players are out of bounds by comparing their current y position to the height of the playing area minus the height of the player
+
+  // If the y position is greater than this value, the player has moved past the bottom of the playing area and the function sets their position to the bottom of the playing area minus their players height
+
+  if (y > tableHeight - player1.height) {
+    player1.y = tableHeight - player1.height;
+  } else if (y < 0) {
+    player1.y = 0;
+  }
+  // player 2 bounds
+  if (y2 > tableHeight - player2.height) {
+    player2.y = tableHeight - player2.height;
+  } else if (y2 < 0) {
+    player2.y = 0;
+  }
+}
 
 // Create controls for player 1 and player 2
 function playerControls() {
@@ -104,21 +127,48 @@ function playerControls() {
 
 // create a ball
 function drawBall() {
+  ctx.beginPath(); // creates a new path for the ball
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false); // Draws a circle on the canvas
   // arc    (x,   y,    radius,   startAngle, endAngle, counterclockwise)
+  ctx.strokeStyle = "gray"; // border color
   ctx.stroke(); //Creates border
   ctx.fillStyle = ball.Color; // sets color for the ball
   ctx.fill(); // fills the ball with color
 }
 
 // allow ball to move randomly
-function moveBall() {}
+function moveBall() {
+  // Makes the ball bounce horizontally on the canvas
 
-// determines the balls direction
-function ballDirection() {}
+  // This If statement checks if the ball has collided with the left or right edge of the canvas, by checking if the sum of the ball's x-position and its radius is greater than the width of the canvas
+
+  // or if the difference between the ball's x-position and its radius is less than 0
+
+  // Then it reverses the direction of the ball along the x-axis by changing the ball direction x to negative
+
+  if (ball.x + ball.radius > tableWidth || ball.x - ball.radius < 0)
+    ball.directionX = -ball.directionX;
+  {
+    // Makes ball bounce of the top of the canvas
+    if (ball.y + ball.radius > tableHeight || ball.y - ball.radius < 0) {
+      ball.directionY = -ball.directionY;
+    }
+  }
+  // these two lines of code update the balls position on the canvas
+  ball.x += ball.directionX;
+  ball.y += ball.directionY;
+}
 
 // determines if the ball has hit a player
-function hitDetection() {}
+function hitDetection() {
+  // Check if the ball collides with the player
+  // player 1 hit detection
+  // will work on this in next push
+  // if (ball.x + ball.radius < player1.width) {
+  //   ball.directionX = -ball.directionX;
+  // Bounce the ball back
+  // }
+}
 
 // This will update the scoreboard if player 1 scores
 function updatePlayer1Score() {}
