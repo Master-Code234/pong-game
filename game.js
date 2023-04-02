@@ -3,6 +3,8 @@ const table = document.querySelector("#table-container");
 const pongTable = document.querySelector("#pongTable");
 const ctx = pongTable.getContext("2d");
 const scoreBoard = document.querySelector("#score");
+const player1Score = document.querySelector("#player1-Score");
+const player2Score = document.querySelector("#player2-Score");
 
 // Getting the width and height of the table
 const tableWidth = pongTable.width;
@@ -11,8 +13,8 @@ const tableHeight = pongTable.height;
 // Create player 1 object
 let player1 = {
   Score: 0,
-  x: 0, // horizontal
-  y: tableWidth / 3, // vertical
+  x: 0, // This is the left side of the player 1
+  y: tableWidth / 3, // Top side of player 1
   height: 100,
   width: 50,
   Color: "red",
@@ -35,8 +37,8 @@ const player2PaddleSpeed = 60;
 let ball = {
   x: tableWidth / 2, // Balls x starting point will always be in center
   y: tableHeight / 2, // Balls y starting point
-  directionX: 0.2,
-  directionY: 0.5,
+  directionX: -0.5,
+  directionY: 0,
   radius: 15,
   Color: "rgba(255, 255, 0, 0.9)",
 };
@@ -59,6 +61,9 @@ function gameLoop() {
   drawBall();
   moveBall();
   hitDetection();
+  updatePlayer2Score();
+  updatePlayer1Score();
+  win();
   outOfBounds(player1.x, player1.y, player2.x, player2.y);
   requestAnimationFrame(gameLoop); //calls the gameloop function to update the screen frame by frame
 }
@@ -146,40 +151,106 @@ function moveBall() {
 
   // Then it reverses the direction of the ball along the x-axis by changing the ball direction x to negative
 
-  if (ball.x + ball.radius > tableWidth || ball.x - ball.radius < 0)
-    ball.directionX = -ball.directionX;
-  {
-    // Makes ball bounce of the top of the canvas
-    if (ball.y + ball.radius > tableHeight || ball.y - ball.radius < 0) {
-      ball.directionY = -ball.directionY;
-    }
+  // Makes ball bounce of the top of the canvas
+  if (ball.y + ball.radius > tableHeight || ball.y - ball.radius < 0) {
+    ball.directionY = -ball.directionY;
   }
+
   // these two lines of code update the balls position on the canvas
   ball.x += ball.directionX;
   ball.y += ball.directionY;
 }
 
-// determines if the ball has hit a player
 function hitDetection() {
-  // Check if the ball collides with the player
-  // player 1 hit detection
-  // will work on this in next push
-  // if (ball.x + ball.radius < player1.width) {
-  //   ball.directionX = -ball.directionX;
-  // Bounce the ball back
-  // }
+  // How to find left right top and bottom sides of the player
+  //  left = player1.x;
+  //  right = player1.x + player1.width;
+  //  top = player1.y;
+  //  bottom = player1.y + player1.height;
+
+  // How to Find the left and right sides of the ball
+  //  left = ball.x - ball.radius;
+  //  right = ball.x + ball.radius;
+
+  //  How to Find the top and bottom sides of the ball
+  //  top = ball.y - ball.radius;
+  //  bottom = ball.y + ball.radius;
+
+  // radius distance between the center of the ball and its edge
+
+
+
+
+    if (
+    // Checks if the right side of player 1 is greater than the left side of the ball
+      player1.x + player1.width > ball.x - ball.radius &&
+    // Checks if the top of player 1 is less than the top of the ball
+      player1.y - player1.height  < ball.y - ball.radius  &&
+    // Checks if the bottom of player 1 is greater than top of the ball
+      player1.y + player1.height > ball.y - ball.radius &&
+    // Checks if the top of player 1 is less than top of the ball
+      player1.y  < ball.y - ball.radius
+      
+    ) {
+      // if all the conditions are true the balls x direction is reversed 
+      ball.directionX = -ball.directionX;
+       
+  }
+
+ 
+
+  if (
+    // Checks if the right side of player 2 -75 is less than the left side of the ball
+    player2.x + player2.width -75 < ball.x - ball.radius &&
+    // Checks if the top of player 2 is less than the top of the ball
+    player2.y - player2.height  < ball.y - ball.radius  &&
+    // Checks if the bottom of player 2 is greater than the top of the ball
+    player2.y + player2.height > ball.y - ball.radius &&
+    // Checks if the top of player 2 is less than the top of the ball
+    player2.y  < ball.y - ball.radius
+    
+  ) {
+    // if all conditions are true the balls x direction is reversed 
+    ball.directionX = -ball.directionX;
+}
+  
+}
+
+// This will update the scoreboard if player 2 scores
+function updatePlayer2Score() {
+  if (ball.x + ball.radius < tableWidth && ball.x - ball.radius < 0 && ball.x + ball.radius < player1.x ) {
+    ball.x = tableWidth / 2;
+    player2.Score += 1; // increment player score
+    player2Score.textContent = player2.Score; // set text content
+  }
 }
 
 // This will update the scoreboard if player 1 scores
-function updatePlayer1Score() {}
-
-// This will update the scoreboard if player 2 scores
-function updatePlayer2Score() {}
+function updatePlayer1Score() {
+  if (ball.x - ball.radius > tableWidth && ball.x + ball.radius > 0 && ball.x + ball.radius > player2.x ) {
+    ball.x = tableWidth / 2;
+    player1.Score += 1; // increment player score
+    player1Score.textContent = player1.Score; // set text content
+  }
+  // return true;
+}
 
 // determines who won the game
-function win() {}
-// determines who lost the game
-function lose() {}
+function win() {
+  // If player 2 score is greater than or equal to 10 then player 2 wins
+  if (player2.Score  >=10) { 
+    window.alert(`player 2 wins`)
+    console.log("player 2 wins");
+    requestAnimationFrame = false;
+    window.location.reload();
+  } 
+  else if (player1.Score >= 10) {
+    window.alert(`player 1 wins`)
+    console.log("player 1 wins");
+    requestAnimationFrame = false;
+    window.location.reload();
+  } 
+  
+}
 
-// this will end the game and reset the players the ball and the scoreboard
-function endGame() {}
+
