@@ -178,58 +178,66 @@ function hitDetection() {
 
   // radius distance between the center of the ball and its edge
 
-
-
-
-    if (
+  if (
     // Checks if the right side of player 1 is greater than the left side of the ball
-      player1.x + player1.width > ball.x - ball.radius &&
+    player1.x + player1.width > ball.x - ball.radius &&
     // Checks if the top of player 1 is less than the top of the ball
-      player1.y - player1.height  < ball.y - ball.radius  &&
+    player1.y - player1.height < ball.y - ball.radius &&
     // Checks if the bottom of player 1 is greater than top of the ball
-      player1.y + player1.height > ball.y - ball.radius &&
+    player1.y + player1.height > ball.y - ball.radius &&
     // Checks if the top of player 1 is less than top of the ball
-      player1.y  < ball.y - ball.radius
-      
-    ) {
-      // if all the conditions are true the balls x direction is reversed 
-      ball.directionX = -ball.directionX;
-       
+    player1.y < ball.y - ball.radius
+  ) {
+    // If all conditions are true reverse the x direction of the ball
+    ball.directionX = -ball.directionX;
+    // Sets the y direction of the ball to a random number this causes the ball to bounce when it hits the player
+    ball.directionY = Math.random();
   }
-
- 
-
   if (
     // Checks if the right side of player 2 -75 is less than the left side of the ball
-    player2.x + player2.width -75 < ball.x - ball.radius &&
+    player2.x + player2.width - 75 < ball.x - ball.radius &&
     // Checks if the top of player 2 is less than the top of the ball
-    player2.y - player2.height  < ball.y - ball.radius  &&
+    player2.y - player2.height < ball.y - ball.radius &&
     // Checks if the bottom of player 2 is greater than the top of the ball
     player2.y + player2.height > ball.y - ball.radius &&
     // Checks if the top of player 2 is less than the top of the ball
-    player2.y  < ball.y - ball.radius
-    
+    player2.y < ball.y - ball.radius
   ) {
-    // if all conditions are true the balls x direction is reversed 
+    // If all conditions are true reverse the x direction of the ball
     ball.directionX = -ball.directionX;
-}
-  
+    // Sets the y direction of the ball to a random number this causes the ball to bounce when it hits the player
+    ball.directionY = Math.random();
+  }
 }
 
-// This will update the scoreboard if player 2 scores
+//  Updates the scoreboard if player 2 scores
 function updatePlayer2Score() {
-  if (ball.x + ball.radius < tableWidth && ball.x - ball.radius < 0 && ball.x + ball.radius < player1.x ) {
-    ball.x = tableWidth / 2;
-    player2.Score += 1; // increment player score
+  if (
+    // Checks if the right side of the ball is less than the width of the table
+    ball.x + ball.radius < tableWidth &&
+    // Checks if the left side of the ball is less than 0
+    ball.x - ball.radius < 0 &&
+    // Checks if the right side of the ball has gone past the left side of player 1
+    ball.x + ball.radius < player1.x
+  ) {
+    ball.x = tableWidth / 2; // Resets the ball to the center of the screen
+    player2.Score += 1; // increment player 2 score
     player2Score.textContent = player2.Score; // set text content
   }
 }
 
-// This will update the scoreboard if player 1 scores
+// Updates the scoreboard if player 1 scores
 function updatePlayer1Score() {
-  if (ball.x - ball.radius > tableWidth && ball.x + ball.radius > 0 && ball.x + ball.radius > player2.x ) {
-    ball.x = tableWidth / 2;
-    player1.Score += 1; // increment player score
+  if (
+    // Checks if the left side of the ball is greater than the width of the table
+    ball.x - ball.radius > tableWidth &&
+    // Checks if the right side of the ball is greater than 0
+    ball.x + ball.radius > 0 &&
+    // Checks if the right side of the ball has gone past the left side of player 2
+    ball.x + ball.radius > player2.x
+  ) {
+    ball.x = tableWidth / 2; // Resets ball to the center of the screen
+    player1.Score += 1; // increment player 1 score
     player1Score.textContent = player1.Score; // set text content
   }
   // return true;
@@ -237,20 +245,17 @@ function updatePlayer1Score() {
 
 // determines who won the game
 function win() {
-  // If player 2 score is greater than or equal to 10 then player 2 wins
-  if (player2.Score  >=10) { 
-    window.alert(`player 2 wins`)
+  if (player2.Score >= 10) {
+    // Checks if player 1 score is greater than 10
+    window.alert(`player 2 wins`);
     console.log("player 2 wins");
-    requestAnimationFrame = false;
-    window.location.reload();
-  } 
-  else if (player1.Score >= 10) {
-    window.alert(`player 1 wins`)
+    requestAnimationFrame = false; // stops game loop
+    window.location.reload(); // reloads the page
+  } else if (player1.Score >= 10) {
+    // Checks if player 2 score is greater than 10
+    window.alert(`player 1 wins`);
     console.log("player 1 wins");
-    requestAnimationFrame = false;
-    window.location.reload();
-  } 
-  
+    requestAnimationFrame = false; // stops game loop
+    window.location.reload(); // reloads the page
+  }
 }
-
-
