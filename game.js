@@ -13,8 +13,8 @@ const tableHeight = pongTable.height;
 // Create player 1 object
 let player1 = {
   Score: 0,
-  x: 0, // This is the left side of the player 1
-  y: tableWidth / 3, // Top side of player 1
+  x: 0, // horizontal direction
+  y: tableWidth / 3, // vertical direction
   height: 100,
   width: 50,
   Color: "red",
