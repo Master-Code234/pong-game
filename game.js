@@ -13,8 +13,8 @@ const tableHeight = pongTable.height;
 // Create player 1 object
 let player1 = {
   Score: 0,
-  x: 0, // horizontal direction
-  y: tableWidth / 3, // vertical direction
+  x: 0, // This is the left side of the player 1
+  y: tableWidth / 3, // Top side of player 1
   height: 100,
   width: 50,
   Color: "red",
@@ -38,7 +38,7 @@ let ball = {
   x: tableWidth / 2, // Balls x starting point will always be in center
   y: tableHeight / 2, // Balls y starting point
   directionX: -0.5,
-  directionY: 0,
+  directionY: -0.2,
   radius: 15,
   Color: "rgba(255, 255, 0, 0.9)",
 };
@@ -49,10 +49,6 @@ console.log(ball.directionY);
 gameLoop();
 
 // All Functions here
-
-function preGame() {
-  // planing to add text saying click to start later on
-}
 
 function gameLoop() {
   // Created a gameloop function that will update the screen for each frame
@@ -162,55 +158,60 @@ function moveBall() {
 }
 
 function hitDetection() {
-  // How to find left right top and bottom sides of the player
-  //  left = player1.x;
-  //  right = player1.x + player1.width;
-  //  top = player1.y;
-  //  bottom = player1.y + player1.height;
+  // Find all sides of players and the ball
+  const player1Left = player1.x;
+  const player1Right = player1.x + player1.width;
+  const player1Top = player1.y;
+  const player1Bottom = player1.y + player1.height;
 
-  // How to Find the left and right sides of the ball
-  //  left = ball.x - ball.radius;
-  //  right = ball.x + ball.radius;
+  const player2Left = player2.x;
+  const player2Right = player2.x + player2.width;
+  const player2Top = player2.y;
+  const player2Bottom = player2.y + player2.height;
 
-  //  How to Find the top and bottom sides of the ball
-  //  top = ball.y - ball.radius;
-  //  bottom = ball.y + ball.radius;
+  const ballLeft = ball.x - ball.radius;
+  const ballRight = ball.x + ball.radius;
+
+  const ballTop = ball.y - ball.radius;
+  const ballBottom = ball.y + ball.radius;
 
   // radius distance between the center of the ball and its edge
 
   if (
     // Checks if the right side of player 1 is greater than the left side of the ball
-    player1.x + player1.width > ball.x - ball.radius &&
-    // Checks if the top of player 1 is less than the top of the ball
-    player1.y - player1.height < ball.y - ball.radius &&
+
+    player1Right > ballLeft &&
+    // Causes the ball to bounce of once the left side of the ball is greater than the players right side
+
+    // Checks if the top of player 1 is less than or equal to the bottom of the ball
+    player1Top <= ballBottom &&
+    // Causes ball to go past the players top side
+
     // Checks if the bottom of player 1 is greater than top of the ball
-    player1.y + player1.height > ball.y - ball.radius &&
-    // Checks if the top of player 1 is less than top of the ball
-    player1.y < ball.y - ball.radius
+
+    player1Bottom > ballTop
+    // Causes the ball to go past the players bottom side
   ) {
     // If all conditions are true reverse the x direction of the ball
-    ball.directionX = -ball.directionX;
+    ball.directionX = -ball.directionX + 0.1;
+
     // Sets the y direction of the ball to a random number this causes the ball to bounce when it hits the player
-    ball.directionY = Math.random();
+    // ball.directionY = Math.random();
   }
   if (
-    // Checks if the right side of player 2 -75 is less than the left side of the ball
-    player2.x + player2.width - 75 < ball.x - ball.radius &&
-    // Checks if the top of player 2 is less than the top of the ball
-    player2.y - player2.height < ball.y - ball.radius &&
+    // Checks if the left side of player 2 is less than the right side of the ball
+    player2Left < ballRight &&
+    // Checks if the top of player 2 is less than or equal to the bottom of the ball
+    player2Top <= ballBottom &&
     // Checks if the bottom of player 2 is greater than the top of the ball
-    player2.y + player2.height > ball.y - ball.radius &&
-    // Checks if the top of player 2 is less than the top of the ball
-    player2.y < ball.y - ball.radius
+    player2Bottom > ballTop
   ) {
     // If all conditions are true reverse the x direction of the ball
     ball.directionX = -ball.directionX;
-    // Sets the y direction of the ball to a random number this causes the ball to bounce when it hits the player
-    ball.directionY = Math.random();
   }
 }
 
-//  Updates the scoreboard if player 2 scores
+// This will update the scoreboard if player 2 scores
 function updatePlayer2Score() {
   if (
     // Checks if the right side of the ball is less than the width of the table
@@ -222,11 +223,13 @@ function updatePlayer2Score() {
   ) {
     ball.x = tableWidth / 2; // Resets the ball to the center of the screen
     player2.Score += 1; // increment player 2 score
+    player2Score.style.color = "blue";
+    ball.directionX = -0.5;
     player2Score.textContent = player2.Score; // set text content
   }
 }
 
-// Updates the scoreboard if player 1 scores
+// This will update the scoreboard if player 1 scores
 function updatePlayer1Score() {
   if (
     // Checks if the left side of the ball is greater than the width of the table
@@ -238,24 +241,23 @@ function updatePlayer1Score() {
   ) {
     ball.x = tableWidth / 2; // Resets ball to the center of the screen
     player1.Score += 1; // increment player 1 score
+    player1Score.style.color = "red";
+    ball.directionX = -0.5;
     player1Score.textContent = player1.Score; // set text content
   }
-  // return true;
 }
 
 // determines who won the game
 function win() {
   if (player2.Score >= 10) {
-    // Checks if player 1 score is greater than 10
-    window.alert(`player 2 wins`);
+    window.alert("player 2 wins and player 1 loses");
     console.log("player 2 wins");
-    requestAnimationFrame = false; // stops game loop
-    window.location.reload(); // reloads the page
+    requestAnimationFrame = false;
+    window.location.reload();
   } else if (player1.Score >= 10) {
-    // Checks if player 2 score is greater than 10
-    window.alert(`player 1 wins`);
+    window.alert("player 1 wins and player 2 loses");
     console.log("player 1 wins");
-    requestAnimationFrame = false; // stops game loop
-    window.location.reload(); // reloads the page
+    requestAnimationFrame = false;
+    window.location.reload();
   }
 }
