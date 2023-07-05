@@ -13,8 +13,8 @@ const tableHeight = pongTable.height;
 // Create player 1 object
 let player1 = {
   Score: 0,
-  x: 0, // This is the left side of the player 1
-  y: tableWidth / 3, // Top side of player 1
+  x: 0,
+  y: tableWidth / 3,
   height: 100,
   width: 50,
   Color: "red",
@@ -37,7 +37,7 @@ const player2PaddleSpeed = 60;
 let ball = {
   x: tableWidth / 2, // Balls x starting point will always be in center
   y: tableHeight / 2, // Balls y starting point
-  directionX: -0.5,
+  directionX: 3,
   directionY: -0.2,
   radius: 15,
   Color: "rgba(255, 255, 0, 0.9)",
@@ -47,8 +47,6 @@ console.log(ball.directionY);
 
 // Call functions here
 gameLoop();
-
-// All Functions here
 
 function gameLoop() {
   // Created a gameloop function that will update the screen for each frame
@@ -65,27 +63,24 @@ function gameLoop() {
 }
 playerControls();
 
-// Draw Player 1
 function drawPaddle1() {
+  // Draw Player 1
+
   ctx.clearRect(0, 0, tableWidth, tableHeight);
   ctx.fillStyle = player1.Color;
   ctx.fillRect(player1.x, player1.y, player1.width, player1.height);
-  //SYNTAX: fillRect(x, y, width, height)
 }
-// Draw Player 2
+
 function drawPaddle2() {
+  // Draw Player 2
+
   ctx.fillStyle = player2.Color;
   ctx.fillRect(player2.x, player2.y, player2.width, player2.height);
 }
 
 // Create paddle boundaries
 function outOfBounds(x, y, x2, y2) {
-  // player 1 bounds
-
-  // This code works by checking if Players are out of bounds by comparing their current y position to the height of the playing area minus the height of the player
-
-  // If the y position is greater than this value, the player has moved past the bottom of the playing area and the function sets their position to the bottom of the playing area minus their players height
-
+  // Player 1 bounds
   if (y > tableHeight - player1.height) {
     player1.y = tableHeight - player1.height;
   } else if (y < 0) {
@@ -101,18 +96,15 @@ function outOfBounds(x, y, x2, y2) {
 
 // Create controls for player 1 and player 2
 function playerControls() {
-  // Listening for keydown events on the pongTable element
   document.addEventListener("keydown", (event) => {
-    // console.log(`${event.code}`);
-
+    // Player 1 controls
     switch (event.code) {
       case "KeyW":
-        // Move the player up by 10 pixels
         player1.y -= player1PaddleSpeed;
         break;
 
       case "KeyS":
-        player1.y += player1PaddleSpeed; // Move the player down by 10 pixels
+        player1.y += player1PaddleSpeed;
         break;
 
       // Player 2 controls
@@ -128,26 +120,15 @@ function playerControls() {
 
 // create a ball
 function drawBall() {
-  ctx.beginPath(); // creates a new path for the ball
-  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false); // Draws a circle on the canvas
-  // arc    (x,   y,    radius,   startAngle, endAngle, counterclockwise)
-  ctx.strokeStyle = "gray"; // border color
-  ctx.stroke(); //Creates border
-  ctx.fillStyle = ball.Color; // sets color for the ball
-  ctx.fill(); // fills the ball with color
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, false);
+  ctx.strokeStyle = "gray";
+  ctx.stroke();
+  ctx.fillStyle = ball.Color;
+  ctx.fill();
 }
-
-// allow ball to move randomly
+// Move Ball randomly on the canvas
 function moveBall() {
-  // Makes the ball bounce horizontally on the canvas
-
-  // This If statement checks if the ball has collided with the left or right edge of the canvas, by checking if the sum of the ball's x-position and its radius is greater than the width of the canvas
-
-  // or if the difference between the ball's x-position and its radius is less than 0
-
-  // Then it reverses the direction of the ball along the x-axis by changing the ball direction x to negative
-
-  // Makes ball bounce of the top of the canvas
   if (ball.y + ball.radius > tableHeight || ball.y - ball.radius < 0) {
     ball.directionY = -ball.directionY;
   }
@@ -157,8 +138,8 @@ function moveBall() {
   ball.y += ball.directionY;
 }
 
+// Checks if the ball hits the player
 function hitDetection() {
-  // Find all sides of players and the ball
   const player1Left = player1.x;
   const player1Right = player1.x + player1.width;
   const player1Top = player1.y;
@@ -175,38 +156,18 @@ function hitDetection() {
   const ballTop = ball.y - ball.radius;
   const ballBottom = ball.y + ball.radius;
 
-  // radius distance between the center of the ball and its edge
-
   if (
-    // Checks if the right side of player 1 is greater than the left side of the ball
-
-    player1Right > ballLeft &&
-    // Causes the ball to bounce of once the left side of the ball is greater than the players right side
-
-    // Checks if the top of player 1 is less than or equal to the bottom of the ball
+    player1Right >= ballLeft &&
     player1Top <= ballBottom &&
-    // Causes ball to go past the players top side
-
-    // Checks if the bottom of player 1 is greater than top of the ball
-
     player1Bottom > ballTop
-    // Causes the ball to go past the players bottom side
   ) {
-    // If all conditions are true reverse the x direction of the ball
-    ball.directionX = -ball.directionX + 0.1;
-
-    // Sets the y direction of the ball to a random number this causes the ball to bounce when it hits the player
-    // ball.directionY = Math.random();
+    ball.directionX = -ball.directionX;
   }
   if (
-    // Checks if the left side of player 2 is less than the right side of the ball
-    player2Left < ballRight &&
-    // Checks if the top of player 2 is less than or equal to the bottom of the ball
+    player2Left <= ballRight &&
     player2Top <= ballBottom &&
-    // Checks if the bottom of player 2 is greater than the top of the ball
     player2Bottom > ballTop
   ) {
-    // If all conditions are true reverse the x direction of the ball
     ball.directionX = -ball.directionX;
   }
 }
@@ -214,36 +175,28 @@ function hitDetection() {
 // This will update the scoreboard if player 2 scores
 function updatePlayer2Score() {
   if (
-    // Checks if the right side of the ball is less than the width of the table
     ball.x + ball.radius < tableWidth &&
-    // Checks if the left side of the ball is less than 0
     ball.x - ball.radius < 0 &&
-    // Checks if the right side of the ball has gone past the left side of player 1
     ball.x + ball.radius < player1.x
   ) {
-    ball.x = tableWidth / 2; // Resets the ball to the center of the screen
-    player2.Score += 1; // increment player 2 score
+    ball.x = tableWidth / 2;
+    player2.Score += 1;
     player2Score.style.color = "blue";
-    ball.directionX = -0.5;
-    player2Score.textContent = player2.Score; // set text content
+    player2Score.textContent = player2.Score;
   }
 }
 
 // This will update the scoreboard if player 1 scores
 function updatePlayer1Score() {
   if (
-    // Checks if the left side of the ball is greater than the width of the table
     ball.x - ball.radius > tableWidth &&
-    // Checks if the right side of the ball is greater than 0
     ball.x + ball.radius > 0 &&
-    // Checks if the right side of the ball has gone past the left side of player 2
     ball.x + ball.radius > player2.x
   ) {
-    ball.x = tableWidth / 2; // Resets ball to the center of the screen
-    player1.Score += 1; // increment player 1 score
+    ball.x = tableWidth / 2;
+    player1.Score += 1;
     player1Score.style.color = "red";
-    ball.directionX = -0.5;
-    player1Score.textContent = player1.Score; // set text content
+    player1Score.textContent = player1.Score;
   }
 }
 
