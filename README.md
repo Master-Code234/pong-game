@@ -1,24 +1,26 @@
 
-Approach taken
+# Approach taken
 
 In this project I have created a pong game using VS Code ,html ,JavaScript and CSS. I was inspired to create a pong game beacuse it's a fun game and the rules are simple. My approach to this project was to create functions for each part of the game. I used the html 5 canvas API to create the table board and to draw all of the objetcs on screen such as the two rectangles and the ball. The left rectangle is player 1 and the right rectangle is player 2. After drawing all of the objects on screen I put them in a game loop.
 
+## Live Site
+[Link to the live site](https://master-code234.github.io/pong-game/)
 
-Link to the live site: https://master-code234.github.io/pong-game/
-
-
-Technologies I used 
-
-1. HTML
-
-2. CSS 
-
-3. JavaScript
-
-4. HTML 5 Canvas
+![pong-game-project](https://github.com/Master-Code234/pong-game/assets/126014289/ecd419a6-8ded-460c-bffb-9a28e6445bbf)
 
 
-How to play
+
+## Technologies I used 
+
+  - HTML
+
+  - CSS 
+
+  - JavaScript
+
+  - HTML 5 Canvas
+
+## How to play
 
 1. To control player 1 use W for up and S for down
 
@@ -38,7 +40,7 @@ How to play
 
 
 
-Installation instructions
+## Installation instructions
 
 1. Create a folder on your computer
 
@@ -52,17 +54,21 @@ Installation instructions
 
 6. Type  git clone + The url you copied
 
+7. Open **Index.html** in a browser
 
 
 
-Unsolved Issues 
 
-1. The ball can clip though the top and bottom of the players at certain angles
+## Unsolved Issues 
 
-2. The ball moves slower on some devices than others
+- The ball can clip though the top and bottom of the players at certain angles
+
+- The ball moves slower on some devices than others
+
+- Does not work on moblie devices
 
 
-
+## Thanks Too
 
 Thanks To Kasper Kain for helping with this project.
 
